@@ -19,10 +19,6 @@ const port = 5001;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}))
 
-//routes
-// app.use("/chats", chatRouter);
-// app.use("/login", loginRouter);
-
 //set the express.static middleware
 app.use(express.static(__dirname + "/public"));
 

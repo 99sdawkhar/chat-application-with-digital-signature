@@ -2,13 +2,9 @@
 
 var fs = require('fs');
 var ursa = require('ursa-purejs');
-var msg;
 var sig;
 var enc;
 var rcv;
-
-
-// msg = "IT’S A SECRET TO EVERYBODY.";
 
 const encryptSign = (msg) => {
   // Bob has his private and Alice's public key
@@ -18,8 +14,6 @@ const encryptSign = (msg) => {
   console.log('Encrypt with Alice Public; Sign with Bob Private');
   enc = pubkeyAlice.encrypt(msg, 'utf8', 'base64');
   sig = privkeyBob.hashAndSign('sha256', msg, 'utf8', 'base64');
-  // console.log('encrypted', enc, '\n');
-  // console.log('signed', sig, '\n');
   return {
     enc: enc,
     sig: sig
@@ -40,7 +34,7 @@ const verifyAndDecrypt = (enc, sig) => {
     rcv = new Buffer.from(decyptedMessage).toString('utf8');
     let rcvbase64 = new Buffer.from(decyptedMessage).toString('base64');
     // rcv = new Buffer.from(decyptedMessage);
-    console.log('decyptedMessage ', decyptedMessage)
+    // console.log('decyptedMessage ', decyptedMessage)
     // console.log('rcv ', rcv)
     // var buf = Buffer.from(decyptedMessage);
     // console.log('buf ', buf)
@@ -70,12 +64,6 @@ const verifyAndDecrypt = (enc, sig) => {
     }
   }
 }
-// const data = encryptSign('Hello')
-// console.log('ENcy Data', data.enc);
-// console.log("signn ",data.sig);
-// console.log(verifyAndDecrypt(data.enc, data.sig));
-
 
 module.exports.encryptSign = encryptSign
 module.exports.verifyAndDecrypt = verifyAndDecrypt
-// module.exports = { encryptSign, verifyAndDecrypt}

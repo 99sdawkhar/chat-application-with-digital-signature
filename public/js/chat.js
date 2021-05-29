@@ -64,7 +64,6 @@ socket.on("message", data => {
   console.log("New Message");
 });
 
-
 // User connected
 // socket.on("user-connected", name => {
 //   appendConnectedMessage(name)
@@ -82,12 +81,12 @@ socket.on("output-messages", data => {
 
 const appendMessages = (decyptedMessage, unsigned, alter, name, createdAt = 'just now') => {
   $("#messages").append(`<li>
-      <h3 class="${alter?'compromised':''}">
-        <span class="user-name">${name?name:'Anonymous'}:</span> ${decyptedMessage}
-      </h3>
-      <span class="${unsigned}">${unsigned}</span>
-      <span class="user-info">${formatTimeAgo(createdAt) === undefined?'just now':formatTimeAgo(createdAt)}</span>
-    </li>`).scrollTop($("#messages")[0].scrollHeight);
+    <h3 class="${alter?'compromised':''}">
+      <span class="user-name">${name?name:'Anonymous'}:</span> ${decyptedMessage}
+    </h3>
+    <span class="${unsigned}">${unsigned}</span>
+    <span class="user-info">${formatTimeAgo(createdAt) === undefined?'just now':formatTimeAgo(createdAt)}</span>
+  </li>`).scrollTop($("#messages")[0].scrollHeight);
 }
 
 const appendConnectedMessage = (name) => {
