@@ -1,8 +1,30 @@
 var socket = io();
 var messages = document.getElementById("messages");
+function getName() {
+  nameValue = $('#sender').val();
+  const name = prompt('Enter you name');
+  if(name != null && name!=""){
+    $('#sender').val(name)
+  }else{
+    alert("Please enter your name to proceed");
+    getName();
+  }
+}
 
 (function() {
+  if ($('#sender').val()) {
+    console.log('Exisits')
+  } else {
+    console.log('not Exisits')
+    getName()
+  }
+
+  // send data to receiver on submit
+  socket.emit("new-user", ({name: $("#sender").val()}));
+
+  // console.log($('#sender').val());
   $("#send").click(function(e) {
+    disableSubmit();
     let unsigned = false;
     let alter = false;
     let li = document.createElement("li");
@@ -12,12 +34,10 @@ var messages = document.getElementById("messages");
     
     if ($("#alter-message:checkbox:checked").length > 0) {
       alter = true;
-    }
+    };
 
     // send data to receiver on submit
-    socket.emit("chat message", ({message: $("#message").val(),unsigned, alter}));
-    // $("#messages").scrollTop($(document).height());
-    // $("#messages").scrollTop = $("#messages").scrollHeight;
+    socket.emit("chat message", ({message: $("#message").val(),unsigned, alter, name: $("#sender").val()}));
 
     e.preventDefault(); // prevents page reloading
     $("#message").val("");
@@ -25,117 +45,51 @@ var messages = document.getElementById("messages");
     return false;
   });
 
-
-
-  // Data is displayed on receiver end when sender sends data on click
-  // socket.on("output-messages", data => {
-  //   // console.log('Added Data: ',data[0].decyptedMessage);
-  //   // $('#messages li').remove();
-  //   if (data.length) {
-  //     data.forEach(user => {
-  //       appendMessages(user.decyptedMessage, user.unsigned, user.alter)
-  //     });
-  //   }
-  //   console.log("Hello bingo!");
-  // });
-
-  // Data is displayed on receiver end when sender sends data on click
-  // socket.on("received", data => {
-  //   console.log('Added Data: ',data.message);
-  //   $("#messages").append(`<li>
-  //     <h3>${data.message}</h3>
-  //     <span class="unsigned">${data.unsigned}</span>
-  //     <span class="altered">${data.alter}</span>
-  //     <span class="user-info">by Anonymous : ssjust now</span>
-  //   </li>`);
-  //   console.log("Hello bingo!");
-  // });
-  // function sendMessage(message){
-  //   $.post('http://localhost:5000/messages', message)
-  // }
+  const disableSubmit = () => {
+    $('#send').attr('disabled',true);
+    $('#message').keyup(function() {
+      const message = $(this).val().trim();
+      if(message.length != 0)
+        $('#send').attr('disabled', false);            
+      else
+        $('#send').attr('disabled',true);
+    })
+  }
+  disableSubmit();
 })();
 
-// // Data is displayed on receiver end when sender sends data on click
+// Data is displayed on receiver end when sender sends data on click
 socket.on("message", data => {
-  appendMessages(data.decyptedMessage, data.unsigned, data.alter)
+  appendMessages(data.decyptedMessage, data.unsigned, data.alter, data.sender, data.createdAt)
   console.log("New Message");
 });
 
 
+// User connected
+// socket.on("user-connected", name => {
+//   appendConnectedMessage(name)
+// });
 
 socket.on("output-messages", data => {
-  // console.log('Added Data: ',data[0].decyptedMessage);
   $('#messages li').remove();
   if (data.length) {
     data.forEach(user => {
-      appendMessages(user.decyptedMessage, user.unsigned, user.alter, user.createdAt)
+      appendMessages(user.decyptedMessage, user.unsigned, user.alter, user.sender, user.createdAt)
     });
   }
   console.log("All Exsiting Data From Db");
 });
 
-const appendMessages = (decyptedMessage, unsigned, alter, createdAt = 'just now') => {
+const appendMessages = (decyptedMessage, unsigned, alter, name, createdAt = 'just now') => {
   $("#messages").append(`<li>
-      <h3>${decyptedMessage}</h3>
-      <span class="unsigned">${unsigned}</span>
-      <span class="altered">${alter}</span>
-      <span class="user-info">by Anonymous : ${formatTimeAgo(createdAt) === undefined?'just now':formatTimeAgo(createdAt)}</span>
+      <h3 class="${alter?'compromised':''}">
+        <span class="user-name">${name?name:'Anonymous'}:</span> ${decyptedMessage}
+      </h3>
+      <span class="${unsigned}">${unsigned}</span>
+      <span class="user-info">${formatTimeAgo(createdAt) === undefined?'just now':formatTimeAgo(createdAt)}</span>
     </li>`).scrollTop($("#messages")[0].scrollHeight);
-
-    // Below doesnot work for arrow function
-    // $("#messages").scrollTop(function() { return this.scrollHeight; });
-  
 }
-// fetching initial chat messages from the database onload for receiver
-// (function() {
-//   fetch("/chats")
-//     .then(data => {
-//       return data.json();
-//     })
-//     .then(json => {
-//       json.map(data => {
-//         let unsignedValue;
-//         let altered = '';
-//         if (data.unsigned === true || data.alter === true) {
-//           if (data.alter === true) {
-//             altered = 'Compromised ';
-//           }
-//           unsignedValue = 'Not Secure ';
-//         } else {
-//           unsignedValue = 'Secure ';
-//           // console.log('Secure', data.decyptedMessage);
-//         }
-//         $("#messages").append(`<li>
-//           <h3>${data.decyptedMessage}</h3>
-//           <span class="unsigned">${unsignedValue}</span>
-//           <span class="altered">${altered}</span>
-//           <span class="user-info">by ${data.sender} : ${formatTimeAgo(data.createdAt)}</span>
-//         </li>`);
-//       });
-//     });
-// })();
 
-
-//is typing...
-
-// let messageInput = document.getElementById("message");
-// let typing = document.getElementById("typing");
-
-// //isTyping event
-// messageInput.addEventListener("keypress", () => {
-//   socket.emit("typing", { user: "Someone", message: "is typing..." });
-// });
-
-// socket.on("notifyTyping", data => {
-//   typing.innerText = data.user + " " + data.message;
-//   console.log(data.user + data.message);
-// });
-
-// //stop typing
-// messageInput.addEventListener("keyup", () => {
-//   socket.emit("stopTyping", "");
-// });
-
-// socket.on("notifyStopTyping", () => {
-//   typing.innerText = "";
-// });
+const appendConnectedMessage = (name) => {
+  $("#messages").prepend(`<h3>You joined</h3>`);
+}
