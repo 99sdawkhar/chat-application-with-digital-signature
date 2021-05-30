@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 mongoose.Promise = require("bluebird");
+const dotenv = require('dotenv');
+dotenv.config({ path: './.env'})
 
-const url = "mongodb+srv://shubham:123@cluster0.skg95.mongodb.net/simple-chat?retryWrites=true&w=majority";
+const url = process.env.URL;;
 
 const connect = mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
       .then(() => console.log("Db Connected"))

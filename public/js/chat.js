@@ -41,6 +41,7 @@ function getName() {
 
     e.preventDefault(); // prevents page reloading
     $("#message").val("");
+    $('input:checkbox').removeAttr('checked');
 
     return false;
   });

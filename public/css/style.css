@@ -213,6 +213,7 @@ body {
   width: calc(100% - 160px);
   position: relative;
   padding: 0 20px;
+  background-color: #fff;
 }
 .bottom_wrapper .message_input_wrapper .message_input {
   border: none;
@@ -222,6 +223,7 @@ body {
   position: absolute;
   outline-width: 0;
   color: gray;
+  background-color: #fff;
 }
 
 .bottom_wrapper .send_message {
@@ -230,28 +232,33 @@ body {
   display: inline-block;
   border-radius: 50px;
   background-color: #a3d063;
-  border: 2px solid #a3d063;
+  border: 1.5px solid #a3d063;
   border-color: #ea5936;
   background-color: #ea5936;
   color: #fff;
   cursor: pointer;
   transition: all 0.2s linear;
   text-align: center;
+  font-size: 20px;
+  text-transform: capitalize;
   float: right;
 }
 
-.blue .bottom_wrapper .send_message {
-  background-color: #42a5f5;
-  border: 2px solid #42a5f5;
-}
-.blue .bottom_wrapper .send_message:hover {
-  color: #42a5f5;
-  background-color: #fff;
-}
 .bottom_wrapper .send_message:hover {
   color: #ea5936;
   background-color: #fff;
 }
+
+.blue .bottom_wrapper .send_message {
+  background-color: #42a5f5;
+  border-color: #42a5f5;
+}
+
+.blue .bottom_wrapper .send_message:hover {
+  color: #42a5f5;
+  background-color: #fff;
+}
+
 .bottom_wrapper .send_message .text {
   font-size: 18px;
   font-weight: 300;
