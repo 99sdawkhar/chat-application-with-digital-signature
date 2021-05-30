@@ -1,4 +1,3 @@
-//require the express module
 const express = require("express");
 const app = express();
 const dateTime = require("simple-datetime-formater");
@@ -6,14 +5,17 @@ const bodyParser = require("body-parser");
 const PromiseA = require('bluebird').Promise;
 const keypair = require('./helper/generateTwoWayKeys');
 const digitalSigning = require('./helper/digitalSigning');
-
+const dotenv = require('dotenv');
 //require the http module
 const http = require("http").Server(app);
+
+// environmental path
+dotenv.config({ path: './.env'})
 
 // require the socket.io module
 const io = require("socket.io")
 
-const port = 5001;
+const port = process.env.PORT;
 
 //bodyparser middleware
 app.use(bodyParser.json());
@@ -26,7 +28,6 @@ app.use(express.static(__dirname + "/public"));
 socket = io(http, { cors: {origin: "*"}});
 
 //database connection
-const Chat = require("./models/Chat");
 const connect = require("./config/dbconnect");
 const users = {}
 
@@ -76,14 +77,13 @@ socket.on("connection", socket => {
         });
         socket.broadcast.emit("output-messages", decryptedData);
         socket.emit("output-messages", decryptedData);
+        // console.log(decryptedData)
       });
 
   // console.log("user connected");
   socket.on("new-user", (name) => {
     users[socket.id] = name
     console.log("user connected", name.name);
-    // socket.broadcast.emit('user-connected', name.name)
-    // socket.emit('user-connected', name.name)
   });
 
   socket.on("disconnect", () => {

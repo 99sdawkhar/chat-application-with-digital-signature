@@ -11,7 +11,7 @@ const encryptSign = (msg) => {
   var privkeyBob = ursa.createPrivateKey(fs.readFileSync('./bob/privkey.pem'));
   var pubkeyAlice = ursa.createPublicKey(fs.readFileSync('./alice/pubkey.pem'));
   
-  console.log('Encrypt with Alice Public; Sign with Bob Private');
+  console.log("Encrypt with Receiver's Public; Sign with Sender's Private");
   enc = pubkeyAlice.encrypt(msg, 'utf8', 'base64');
   sig = privkeyBob.hashAndSign('sha256', msg, 'utf8', 'base64');
   return {
@@ -27,17 +27,12 @@ const verifyAndDecrypt = (enc, sig) => {
     var pubkeyBob = ursa.createPublicKey(fs.readFileSync('./bob/pubkey.pem'));
 
     let verificationFailed = false;
-    console.log('Decrypt with Alice Private; Verify with Bob Public');
+    console.log("Decrypt with Receiver's Private; Verify with Sender's Public");
     const decyptedMessage = privkeyAlice.decrypt(enc, 'base64', 'utf8');
 
     // Converting Data to hash/buffer again
     rcv = new Buffer.from(decyptedMessage).toString('utf8');
     let rcvbase64 = new Buffer.from(decyptedMessage).toString('base64');
-    // rcv = new Buffer.from(decyptedMessage);
-    // console.log('decyptedMessage ', decyptedMessage)
-    // console.log('rcv ', rcv)
-    // var buf = Buffer.from(decyptedMessage);
-    // console.log('buf ', buf)
 
     if (decyptedMessage !== rcv) {
       verificationFailed = true;
