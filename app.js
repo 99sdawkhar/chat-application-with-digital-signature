@@ -29,6 +29,7 @@ socket = io(http, { cors: {origin: "*"}});
 
 //database connection
 const connect = require("./config/dbconnect");
+const Chat = require("./models/Chat");
 const users = {}
 
 //setup event listener
